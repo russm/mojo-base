@@ -26,14 +26,14 @@ wire new_dac_sample;
 wire [9:0] dac_sample;
 wire [3:0] dac_sample_channel;
 
+wire sink;
+assign sink = clk ^ new_dac_sample ^ dac_sample[9] ^ dac_sample[8] ^ dac_sample[7] ^ dac_sample[6] ^ dac_sample[5] ^ dac_sample[4] ^ dac_sample[3] ^ dac_sample[2] ^ dac_sample[1] ^ dac_sample[0] ^ dac_sample_channel[3] ^ dac_sample_channel[2] ^ dac_sample_channel[1] ^ dac_sample_channel[0] ^ tx_busy;
 
-// led_wave #(.CTR_LEN(28)) led_wave (
-//     .rst(rst),
-//     .clk(clk),
-//     .led(led)
-// );
-
-assign led = new_dac_sample ^ dac_sample[7:0] ^ dac_sample[9:8] ^ dac_sample_channel ^ tx_busy;
+led_wave #(.CTR_LEN(27)) led_wave (
+    .rst(rst),
+    .clk(sink),
+    .led(led)
+);
 
 serial_loop serial_loop (
   .rx_data(rx_data),
