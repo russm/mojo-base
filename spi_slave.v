@@ -4,6 +4,7 @@ module spi_slave(
 	input ss,
 	input mosi,
 	output miso,
+	output miso_enable,
 	input sck,
 	output done,
 	input [7:0] din,
@@ -20,7 +21,8 @@ reg [2:0] bit_ct_d, bit_ct_q;
 reg [7:0] dout_d, dout_q;
 reg miso_d, miso_q;
 
-assign miso = ss ? 1'bZ : miso_q;
+assign miso_enable = ~ss;
+assign miso = miso_q;
 assign done = done_q;
 assign dout = dout_q;
 
