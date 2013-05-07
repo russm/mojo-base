@@ -34,7 +34,6 @@ wire [7:0] spi_dout;
 wire tx_m;
 wire spi_miso_m;
 wire spi_miso_enable_m;
-wire spi_miso_enable;
 
 reg byte_ct_d, byte_ct_q;
 reg [9:0] sample_d, sample_q;
@@ -84,14 +83,8 @@ assign sample = sample_q;
 assign sample_channel = sample_channel_q;
 
 assign spi_channel = ready ? channel : 4'bZZZZ;
-assign spi_miso_enable = ready & spi_miso_enable_m;
+assign spi_miso = (ready & spi_miso_enable_m) ? spi_miso_m : 1'bZ;
 assign tx = ready ? tx_m : 1'bZ;
-
-OBUFT OBUFT_spi_miso (
-  .O(spi_miso),
-  .I(spi_miso_m),
-  .T(spi_miso_enable)
-);
 
 always @(*) begin
 	byte_ct_d = byte_ct_q;
