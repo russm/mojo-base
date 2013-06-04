@@ -7,7 +7,8 @@ module mojo_serial_block_out #(
   output [7:0] tx_data,
   output new_tx_data,
   input [(BLOCK_BYTES*8)-1:0] tx_block,
-  input new_tx_block
+  input new_tx_block,
+  output tx_block_busy
 );
 
 parameter BLOCK_BITS = BLOCK_BYTES*8;
@@ -19,7 +20,7 @@ wire [BLOCK_BITS-1:0] tx_block_d;
 reg [COUNTER_TOP_BIT:0] tx_remaining_q = {COUNTER_BITS{1'b1}};
 wire [COUNTER_TOP_BIT:0] tx_remaining_d;
 
-wire tx_block_busy = !tx_remaining_q[COUNTER_TOP_BIT];
+assign tx_block_busy = !tx_remaining_q[COUNTER_TOP_BIT];
 
 assign tx_data = tx_block_q[7:0];
 assign tx_block_d = {tx_block_q[BLOCK_BITS-1-8:0], tx_block_q[BLOCK_BITS-1:BLOCK_BITS-8]};
