@@ -27,7 +27,7 @@ wire [9:0] dac_sample;
 wire [3:0] dac_sample_channel;
 
 wire sink;
-assign sink = clk ^ new_dac_sample ^ dac_sample[9] ^ dac_sample[8] ^ dac_sample[7] ^ dac_sample[6] ^ dac_sample[5] ^ dac_sample[4] ^ dac_sample[3] ^ dac_sample[2] ^ dac_sample[1] ^ dac_sample[0] ^ dac_sample_channel[3] ^ dac_sample_channel[2] ^ dac_sample_channel[1] ^ dac_sample_channel[0];
+assign sink = clk ^ new_dac_sample ^ dac_sample[9] ^ dac_sample[8] ^ dac_sample[7] ^ dac_sample[6] ^ dac_sample[5] ^ dac_sample[4] ^ dac_sample[3] ^ dac_sample[2] ^ dac_sample[1] ^ dac_sample[0] ^ dac_sample_channel[3] ^ dac_sample_channel[2] ^ dac_sample_channel[1] ^ dac_sample_channel[0] ^ tx_block_busy;
 
 led_wave #(.CTR_LEN(27)) led_wave (
     .rst(rst),
@@ -56,7 +56,8 @@ mojo_serial_block_out #(.BLOCK_BYTES(42)) mojo_serial_block_out (
   .tx_data(tx_data),
   .new_tx_data(new_tx_data),
   .tx_block(tx_block),
-  .new_tx_block(new_tx_block)
+  .new_tx_block(new_tx_block),
+  .tx_block_busy(tx_block_busy)
 );
 
 avr_interface avr_interface (
