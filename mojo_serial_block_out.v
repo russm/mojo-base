@@ -19,6 +19,8 @@ wire [BLOCK_BITS-1:0] tx_block_d;
 reg [COUNTER_TOP_BIT:0] tx_remaining_q = {COUNTER_BITS{1'b1}};
 wire [COUNTER_TOP_BIT:0] tx_remaining_d;
 
+wire tx_block_busy = !tx_remaining_q[COUNTER_TOP_BIT];
+
 assign tx_data = tx_block_q[7:0];
 assign tx_block_d = {tx_block_q[BLOCK_BITS-1-8:0], tx_block_q[BLOCK_BITS-1:BLOCK_BITS-8]};
 assign tx_remaining_d = tx_remaining_q - 1'b1;
@@ -29,14 +31,14 @@ assign new_tx_data = new_tx_data_q;
 always @(posedge clk) begin
   if (rst) begin
     tx_remaining_q <= {COUNTER_BITS{1'b1}};
-  end else if (new_tx_block) begin
+  end else if (new_tx_block && !tx_block_busy) begin
     tx_block_q <= tx_block;
     tx_remaining_q <= BLOCK_BYTES-1;
-  end else if (!tx_remaining_q[COUNTER_TOP_BIT] && !tx_busy) begin
+  end else if (tx_block_busy && !tx_busy) begin
     tx_block_q <= tx_block_d;
     tx_remaining_q <= tx_remaining_d;
   end
-  new_tx_data_q <= !tx_remaining_q[COUNTER_TOP_BIT] && !tx_busy;
+  new_tx_data_q <= tx_block_busy && !tx_busy;
 end
 
 endmodule
